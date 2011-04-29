@@ -56,7 +56,7 @@ create_postinstall_script: resourcedir
 	@echo "dscl -f \$$3/var/db/dslocal/nodes/Default localonly -merge /Local/Target/Groups/admin GroupMembership ${SHORTNAME}">>${POSTFLIGHT}
 	@echo "dscl -f \$$3/var/db/dslocal/nodes/Default localonly -merge /Local/Target/Groups/admin GroupMembers ${GENUID}">>${POSTFLIGHT}
 	# create home directory for user
-	@echo "mkdir -p \$$3/${USER_HOME}"
+	@echo "mkdir -p \$$3/${USER_HOME}" >>${POSTFLIGHT}
 	@chmod 755 ${POSTFLIGHT}
 
 
