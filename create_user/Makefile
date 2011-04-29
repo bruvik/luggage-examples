@@ -15,7 +15,7 @@ GID=20 #20 is "staff"
 SHELL=/bin/bash
 PICTURE="/Library/User\ Pictures/Fun/Robot.tif"
 GENUID=B36EE516-5E79-44C1-B3DC-5C6623FFDE0B
-USER_HOME=/var/${USERNAME}
+USER_HOME=/var/${SHORTNAME}
 
 # variables
 TITLE=${SHORTNAME}
