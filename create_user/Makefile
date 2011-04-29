@@ -10,12 +10,12 @@ PACKAGE_VERSION=1.0.0
 REVERSE_DOMAIN=no.uio
 SHORTNAME=myadminuser
 REALNAME="Evil system administrator"
-UID=200
+UID=400
 GID=20 #20 is "staff"
 SHELL=/bin/bash
 PICTURE="/Library/User\ Pictures/Fun/Robot.tif"
 GENUID=B36EE516-5E79-44C1-B3DC-5C6623FFDE0B
-USER_HOME=/Users/${USERNAME}
+USER_HOME=/var/${USERNAME}
 
 # variables
 TITLE=${SHORTNAME}
@@ -35,7 +35,7 @@ create_user: l_root
 	${DSCL} -f ${TEMP_NODE} localonly -create ${USERPATH} realname ${REALNAME}
 	${DSCL} -f ${TEMP_NODE} localonly -create ${USERPATH} gid ${GID}
 	${DSCL} -f ${TEMP_NODE} localonly -create ${USERPATH} uid ${UID}
-	${DSCL} -f ${TEMP_NODE} localonly -create ${USERPATH} home ${USER_HOME}
+	${DSCL} -f ${TEMP_NODE} localonly -create ${USERPATH} NFSHomeDirectory ${USER_HOME}
 	${DSCL} -f ${TEMP_NODE} localonly -create ${USERPATH} generateduid ${GENUID}
 	${DSCL} -f ${TEMP_NODE} localonly -merge ${USERPATH} authentication_authority ";ShadowHash;"
 	${DSCL} -f ${TEMP_NODE} localonly -create ${USERPATH} passwd "*"
@@ -50,9 +50,13 @@ create_user: l_root
 # create our postinstallscript:
 create_postinstall_script: resourcedir
 	@echo "#!/bin/bash">${POSTFLIGHT}
+	# hide user from loginwindow
 	@echo "/usr/bin/defaults write \$$3/Library/Preferences/com.apple.loginwindow HiddenUsersList -array-add ${SHORTNAME}" >> ${POSTFLIGHT}
+	# add user to admin group
 	@echo "dscl -f \$$3/var/db/dslocal/nodes/Default localonly -merge /Local/Target/Groups/admin GroupMembership ${SHORTNAME}">>${POSTFLIGHT}
 	@echo "dscl -f \$$3/var/db/dslocal/nodes/Default localonly -merge /Local/Target/Groups/admin GroupMembers ${GENUID}">>${POSTFLIGHT}
+	# create home directory for user
+	@echo "mkdir -p \$$3/${USER_HOME}"
 	@chmod 755 ${POSTFLIGHT}
 
 
